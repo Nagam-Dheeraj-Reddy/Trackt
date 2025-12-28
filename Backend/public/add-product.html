@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Product - WarrantyVault</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --glass-bg: rgba(30, 41, 59, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --input-bg: rgba(15, 23, 42, 0.6);
+      --text-white: #ffffff;
+      --text-muted: #94a3b8;
+      --glow-color: #a78bfa;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text-white);
+      background-color: #0f172a;
+      background-image: 
+        radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    /* Ambient Glow */
+    .ambient-light {
+      position: fixed;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, rgba(0,0,0,0) 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .card-container {
+      width: 100%;
+      max-width: 550px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-header {
+      background: rgba(124, 58, 237, 0.1);
+      padding: 30px 40px;
+      border-bottom: 1px solid var(--glass-border);
+      text-align: center;
+    }
+
+    .card-header h1 {
+      font-size: 1.8em;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+      background: linear-gradient(to right, #fff, #c4b5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .card-header p {
+      font-size: 0.95em;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .form-section {
+      padding: 40px;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    /* Floating Labels Logic */
+    .floating-label {
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      font-size: 0.95em;
+      color: var(--text-muted);
+      pointer-events: none;
+      transition: 0.2s ease all;
+      background: transparent;
+    }
+
+    input:focus ~ .floating-label,
+    input:not(:placeholder-shown) ~ .floating-label {
+      top: -10px;
+      left: 12px;
+      font-size: 0.8em;
+      color: var(--glow-color);
+      background: #1e293b;
+      padding: 0 6px;
+      border-radius: 4px;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px;
+      background: var(--input-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      color: #fff;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    input:focus {
+      border-color: var(--glow-color);
+      box-shadow: 0 0 15px rgba(167, 139, 250, 0.15);
+      background: rgba(15, 23, 42, 0.8);
+    }
+    
+    /* Date input placeholder fix for dark mode */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        cursor: pointer;
+    }
+
+    .helper-text {
+      font-size: 0.8em;
+      color: #64748b;
+      margin-top: 6px;
+      margin-left: 4px;
+    }
+
+    /* Upload Area */
+    .upload-section-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .drag-upload {
+      border: 2px dashed rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .drag-upload:hover, .drag-upload.dragover {
+      border-color: var(--glow-color);
+      background: rgba(167, 139, 250, 0.05);
+    }
+
+    .upload-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+      display: block;
+      color: var(--text-muted);
+    }
+
+    .upload-label {
+      font-size: 0.9rem;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .upload-desc {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    /* Buttons */
+    .btn-group {
+      display: flex;
+      gap: 16px;
+      margin-top: 30px;
+    }
+
+    .save-btn {
+      flex: 2;
+      padding: 16px;
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .save-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
+    }
+
+    .secondary-btn {
+      flex: 1;
+      padding: 16px;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-muted);
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .secondary-btn:hover {
+      border-color: #fff;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Modal for Success/Error */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);
+      z-index: 999; display: none; align-items: center; justify-content: center;
+    }
+    .modal-card {
+      background: #1e293b; padding: 30px; border-radius: 20px;
+      border: 1px solid var(--glass-border); text-align: center;
+      max-width: 350px; width: 90%; animation: popIn 0.3s;
+    }
+    @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  </style>
+</head>
+<body>
+
+  <div class="ambient-light"></div>
+
+  <div class="card-container">
+    <div class="card-header">
+      <h1>Add New Product</h1>
+      <p>Securely store your warranty details in the vault.</p>
+    </div>
+
+    <form id="addProductForm" enctype="multipart/form-data" class="form-section">
+      
+      <div class="form-group">
+        <input type="text" name="name" required placeholder=" " autocomplete="off">
+        <span class="floating-label">Product Name *</span>
+        <div class="helper-text">e.g., iPhone 15 Pro Max</div>
+      </div>
+
+      <div class="form-group">
+        <input type="text" name="model" placeholder=" " autocomplete="off">
+        <span class="floating-label">Model Number</span>
+      </div>
+
+      <div class="form-group">
+        <input type="text" name="serialNumber" placeholder=" " autocomplete="off">
+        <span class="floating-label">Serial Number</span>
+      </div>
+
+      <div class="form-group">
+        <input type="date" id="purchaseDate" name="purchaseDate" required placeholder=" " autocomplete="off">
+        <span class="floating-label" style="background:transparent;">Purchase Date *</span>
+      </div>
+
+      <div class="form-group">
+        <input type="number" name="warrantyPeriodMonths" required placeholder=" " min="1" autocomplete="off">
+        <span class="floating-label">Warranty (Months) *</span>
+      </div>
+
+      <div class="form-group">
+        <input type="url" name="warrantyUrl" placeholder=" " autocomplete="off">
+        <span class="floating-label">Warranty Claim URL</span>
+      </div>
+
+      <div class="form-group">
+        <span class="upload-section-title">Product Image</span>
+        <div class="drag-upload" id="imageDrop">
+          <span class="upload-icon">📷</span>
+          <span class="upload-label">Drop image here or click to upload</span>
+          <input type="file" name="productImage" accept="image/*" style="display:none;">
+          <div class="upload-desc">JPG, PNG, JPEG</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <span class="upload-section-title">Invoice / Warranty Card</span>
+        <div class="drag-upload" id="invoiceDrop">
+          <span class="upload-icon">📄</span>
+          <span class="upload-label">Drop invoice here or click to upload</span>
+          <input type="file" name="invoice" accept="application/pdf,image/*" style="display:none;">
+          <div class="upload-desc">PDF, JPG, PNG</div>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="secondary-btn" onclick="window.location.href='dashboard.html'">Cancel</button>
+        <button type="submit" class="save-btn">Save to Vault</button>
+      </div>
+
+    </form>
+  </div>
+
+  <div class="modal-overlay" id="customAlert">
+      <div class="modal-card">
+          <h3 id="alertTitle" style="margin-top:0; color:#fff;"></h3>
+          <p id="alertMsg" style="color:#cbd5e1; margin-bottom:20px;"></p>
+          <button onclick="closeAlert()" style="background:#6366f1; color:white; border:none; padding:10px 24px; border-radius:8px; cursor:pointer;">OK</button>
+      </div>
+  </div>
+
+  <script>
+    // --- EXACT LOGIC PRESERVED ---
+    
+    // Set max date for purchase date to today
+    document.getElementById('purchaseDate').max = new Date().toISOString().split('T')[0];
+
+    // Drag & Drop Logic
+    function setupDragUpload(dropId) {
+      const drop = document.getElementById(dropId);
+      const input = drop.querySelector('input[type="file"]');
+      const label = drop.querySelector('.upload-label');
+
+      drop.addEventListener('click', () => input.click());
+
+      input.addEventListener('change', () => {
+          if(input.files.length > 0) label.textContent = input.files[0].name;
+      });
+
+      drop.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        drop.classList.add('dragover');
+      });
+      drop.addEventListener('dragleave', () => {
+        drop.classList.remove('dragover');
+      });
+      drop.addEventListener('drop', (e) => {
+        e.preventDefault();
+        drop.classList.remove('dragover');
+        if (e.dataTransfer.files.length) {
+          input.files = e.dataTransfer.files;
+          label.textContent = input.files[0].name;
+        }
+      });
+    }
+    setupDragUpload('imageDrop');
+    setupDragUpload('invoiceDrop');
+
+    // Custom Alert Helper
+    function showAlert(title, msg, callback) {
+        document.getElementById('alertTitle').innerText = title;
+        document.getElementById('alertMsg').innerText = msg;
+        document.getElementById('customAlert').style.display = 'flex';
+        window.alertCallback = callback;
+    }
+    function closeAlert() {
+        document.getElementById('customAlert').style.display = 'none';
+        if(window.alertCallback) window.alertCallback();
+    }
+
+    // Submit Handler
+    document.getElementById('addProductForm').onsubmit = async (e) => {
+      e.preventDefault();
+
+      const purchaseDateInput = document.getElementById('purchaseDate');
+      const purchaseDateValue = new Date(purchaseDateInput.value);
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      
+      if (purchaseDateValue > today) {
+        showAlert('Invalid Date', 'Purchase date cannot be in the future.');
+        return;
+      }
+
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        showAlert('Session Expired', 'Please log in again.', () => window.location.href = '/login.html');
+        return;
+      }
+      
+      const formData = new FormData(e.target);
+      formData.append('userId', userId);
+
+      try {
+        // Change button text to indicate loading
+        const btn = document.querySelector('.save-btn');
+        const originalText = btn.innerText;
+        btn.innerText = "Saving...";
+        btn.disabled = true;
+
+        const response = await fetch('/api/products/add', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          showAlert('Success!', 'Product added successfully.', () => window.location.href = 'dashboard.html');
+        } else {
+          showAlert('Error', result.error || 'Failed to save');
+          btn.innerText = originalText;
+          btn.disabled = false;
+        }
+      } catch (err) {
+        showAlert('Network Error', err.message);
+        document.querySelector('.save-btn').innerText = "Save to Vault";
+        document.querySelector('.save-btn').disabled = false;
+      }
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>How to Use - WarrantyVault</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-white: #ffffff;
+      --text-muted: #cbd5e1;
+      --glow-color: #a78bfa;
+      --card-hover: rgba(255, 255, 255, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text-white);
+      background-color: #0f172a;
+      background-image: 
+        radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+      padding-bottom: 60px;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Background Light */
+    .ambient-light {
+      position: fixed;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, rgba(0,0,0,0) 70%);
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto 0 auto;
+      padding: 0 20px;
+      position: relative;
+    }
+
+    /* Typography */
+    .how-title {
+      font-size: 3em;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 10px;
+      background: linear-gradient(to right, #fff, #c4b5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -1px;
+    }
+
+    .how-subtitle {
+      font-size: 1.1em;
+      color: var(--text-muted);
+      margin-bottom: 50px;
+      font-weight: 400;
+      text-align: center;
+    }
+
+    /* Navigation Button */
+    .go-home-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 24px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--glass-border);
+      color: #fff;
+      border-radius: 50px;
+      font-size: 0.95em;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      margin-bottom: 40px;
+    }
+
+    .go-home-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateX(-5px);
+    }
+
+    /* Steps Layout */
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 30px; /* Space between cards */
+    }
+
+    /* Glass Card Style */
+    .step-card {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 0;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .step-card.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .step-card:hover {
+      background: var(--card-hover);
+      border-color: rgba(167, 139, 250, 0.3);
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.1);
+    }
+
+    /* Alternating Layout */
+    .step-card:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+
+    /* Content Side */
+    .step-content {
+      flex: 1;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .step-title-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .step-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: var(--primary-gradient);
+      color: #fff;
+      font-size: 1.4em;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .step-title {
+      font-size: 1.5em;
+      font-weight: 600;
+      color: #fff;
+      margin: 0;
+    }
+
+    .step-desc {
+      font-size: 1em;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .step-note {
+      background: rgba(124, 58, 237, 0.1);
+      border-left: 3px solid #a78bfa;
+      color: #e2e8f0;
+      font-size: 0.9em;
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+    }
+
+    /* Image Side */
+    .step-image-frame {
+      flex: 1;
+      max-width: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .device-mockup {
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+      cursor: zoom-in;
+    }
+
+    .step-card:hover .device-mockup {
+      transform: scale(1.02);
+    }
+
+    .device-mockup img {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: brightness(0.9);
+      transition: filter 0.3s;
+    }
+    
+    .device-mockup:hover img {
+        filter: brightness(1.05);
+    }
+
+    /* CTA Bottom */
+    .cta-end {
+      text-align: center;
+      margin-top: 60px;
+      padding: 40px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .cta-end-title {
+      font-size: 1.5em;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .cta-dashboard-btn {
+      display: inline-block;
+      padding: 16px 48px;
+      background: var(--primary-gradient);
+      color: #fff;
+      border-radius: 50px;
+      font-size: 1.1em;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      transition: all 0.2s;
+    }
+
+    .cta-dashboard-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.6);
+    }
+
+    /* Popup Modal (Dark Theme) */
+    .image-popup-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      animation: fadeIn 0.3s;
+    }
+
+    .image-popup-content {
+      position: relative;
+      background: transparent;
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .image-popup-content img {
+      max-width: 100%;
+      max-height: 85vh;
+      border-radius: 12px;
+      box-shadow: 0 0 50px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .close-popup-btn {
+      margin-top: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50px;
+      padding: 8px 24px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .close-popup-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 900px) {
+      .how-title { font-size: 2.2em; }
+      .step-card, .step-card:nth-child(even) {
+        flex-direction: column;
+        text-align: center;
+      }
+      .step-title-row { justify-content: center; }
+      .step-image-frame { padding: 0 0 20px 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-light"></div>
+
+  <div class="container">
+    <div class="how-title">How to Use WarrantyVault</div>
+    <div class="how-subtitle">Follow these simple steps to manage your warranties efficiently</div>
+    
+    <a href="home.html" class="go-home-btn">← Back to Home</a>
+
+    <div class="steps-list">
+      
+      <div class="step-card" id="step1">
+        <div class="step-image-frame">
+          <div class="device-mockup">
+            <img src="Images/htu1.png" alt="Home Page Navigation" />
+          </div>
+        </div>
+        <div class="step-content">
+          <div class="step-title-row">
+            <div class="step-badge">1</div>
+            <h3 class="step-title">Explore the Home Page</h3>
+          </div>
+          <div class="step-desc">
+            After opening WarrantyVault, you'll land on the home page. Use the navigation bar to access Features, Blog, How to Use, or go directly to your Dashboard.
+          </div>
+          <div class="step-note">
+            Tip: Click "Go to Dashboard" for quick access to your active warranties.
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" id="step2">
+        <div class="step-image-frame">
+          <div class="device-mockup">
+            <img src="Images/htu2.png" alt="Dashboard Overview" />
+          </div>
+        </div>
+        <div class="step-content">
+          <div class="step-title-row">
+            <div class="step-badge">2</div>
+            <h3 class="step-title">Dashboard Overview</h3>
+          </div>
+          <div class="step-desc">
+            View all your products, warranty statuses, and quick actions. Stats show total, active, expiring soon, and expired warranties in a clean interface.
+          </div>
+          <div class="step-note">
+            Use the "Add Product" button to register a new product instantly.
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" id="step3">
+        <div class="step-image-frame">
+          <div class="device-mockup">
+            <img src="Images/addprod.png" alt="Add Product" />
+          </div>
+        </div>
+        <div class="step-content">
+          <div class="step-title-row">
+            <div class="step-badge">3</div>
+            <h3 class="step-title">Add a New Product</h3>
+          </div>
+          <div class="step-desc">
+            Fill in product details, upload the product image, invoice, and warranty card. This keeps all your documents securely organized in one place.
+          </div>
+          <div class="step-note">
+            You can download invoices and warranty cards anytime from the product page.
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" id="step4">
+        <div class="step-image-frame">
+          <div class="device-mockup">
+            <img src="Images/htu4.png" alt="Product Details" />
+          </div>
+        </div>
+        <div class="step-content">
+          <div class="step-title-row">
+            <div class="step-badge">4</div>
+            <h3 class="step-title">View Details & Claim</h3>
+          </div>
+          <div class="step-desc">
+            Click on any product to view its details. Access warranty info, download documents, and claim warranty directly via the external link.
+          </div>
+          <div class="step-note">
+            Use the "Visit Warranty Page" button to jump to the manufacturer's claim portal.
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card" id="step5">
+        <div class="step-image-frame">
+          <div class="device-mockup">
+            <img src="Images/htu5.png" alt="Warranty Check Example" />
+          </div>
+        </div>
+        <div class="step-content">
+          <div class="step-title-row">
+            <div class="step-badge">5</div>
+            <h3 class="step-title">Check Warranty Status</h3>
+          </div>
+          <div class="step-desc">
+            For supported brands, you can check warranty status by entering the serial number on their official portal via our quick links.
+          </div>
+          <div class="step-note">
+            Always keep your serial number handy when contacting support.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="cta-end">
+      <div class="cta-end-title">🚀 Ready to secure your products?</div>
+      <a href="dashboard.html" class="cta-dashboard-btn">Go to Dashboard</a>
+    </div>
+
+  </div>
+
+  <script>
+    // Fade-in animation on scroll
+    function revealSteps() {
+      document.querySelectorAll('.step-card').forEach(card => {
+        const rect = card.getBoundingClientRect();
+        // Trigger slightly earlier for smoother feel
+        if (rect.top < window.innerHeight - 80) {
+          card.classList.add('visible');
+        }
+      });
+    }
+    
+    window.addEventListener('scroll', revealSteps);
+    window.addEventListener('DOMContentLoaded', revealSteps);
+
+    // Image popup logic (Dark Theme)
+    document.querySelectorAll('.device-mockup').forEach(mockup => {
+      mockup.onclick = function() {
+        const img = mockup.querySelector('img');
+        const popupBg = document.createElement('div');
+        popupBg.className = 'image-popup-bg';
+        popupBg.onclick = function(e) {
+          if (e.target === popupBg) popupBg.remove();
+        };
+
+        const popupContent = document.createElement('div');
+        popupContent.className = 'image-popup-content';
+
+        const bigImg = document.createElement('img');
+        bigImg.src = img.src;
+        bigImg.alt = img.alt;
+        popupContent.appendChild(bigImg);
+
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'close-popup-btn';
+        closeBtn.textContent = 'Close Preview';
+        closeBtn.onclick = () => popupBg.remove();
+        popupContent.appendChild(closeBtn);
+
+        popupBg.appendChild(popupContent);
+        document.body.appendChild(popupBg);
+      };
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile - WarrantyVault</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --glass-bg: rgba(30, 41, 59, 0.75);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --input-bg: rgba(15, 23, 42, 0.6);
+      --text-white: #ffffff;
+      --text-muted: #94a3b8;
+      --glow-color: #a78bfa;
+      --success: #4ade80;
+      --danger: #ef4444;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text-white);
+      background-color: #0f172a;
+      background-image: 
+        radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .ambient-light {
+      position: fixed;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, rgba(0,0,0,0) 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Container Grid */
+    .profile-container {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+      width: 100%;
+      max-width: 1000px;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+
+    /* Left Column: Identity Card */
+    .identity-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      height: fit-content;
+      position: relative;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 140px; height: 140px;
+      margin-bottom: 20px;
+    }
+
+    .avatar-img {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid rgba(124, 58, 237, 0.5);
+      box-shadow: 0 0 30px rgba(124, 58, 237, 0.3);
+      background: #1e293b;
+    }
+
+    /* Floating Action Buttons on Avatar */
+    .avatar-actions {
+      position: absolute;
+      bottom: 0;
+      right: -10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .icon-btn-small {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      transition: transform 0.2s;
+    }
+    .icon-btn-small:hover { transform: scale(1.1); }
+    
+    .btn-edit-photo { background: var(--primary-gradient); }
+    .btn-remove-photo { background: var(--danger); }
+
+    .user-name { font-size: 1.4rem; font-weight: 700; margin: 0; color: #fff; word-break: break-word;}
+    .user-role { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
+
+    .status-pill {
+      margin-top: 16px;
+      background: rgba(74, 222, 128, 0.15);
+      color: var(--success);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+
+    /* Right Column: Details */
+    .details-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      border-bottom: 1px solid var(--glass-border);
+      padding-bottom: 15px;
+    }
+
+    .section-title { font-size: 1.2rem; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 10px;}
+
+    /* Info Grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .info-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 600; }
+    .value { 
+      font-size: 1rem; color: #fff; font-weight: 500; 
+      background: rgba(255,255,255,0.03); padding: 12px 16px; 
+      border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);
+      min-height: 48px; display: flex; align-items: center;
+    }
+
+    /* Edit Form */
+    .edit-form { display: none; flex-direction: column; gap: 20px; animation: fadeIn 0.3s; }
+    
+    .edit-form input, .edit-form textarea {
+      width: 100%; padding: 12px 16px;
+      background: var(--input-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      color: #fff; font-family: 'Poppins', sans-serif; font-size: 0.95rem;
+      outline: none; transition: border-color 0.2s;
+    }
+    .edit-form input:focus { border-color: var(--glow-color); box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.2); }
+    .edit-form textarea { resize: vertical; min-height: 80px; }
+
+    /* Buttons */
+    .action-btn {
+      padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer;
+      font-weight: 600; transition: all 0.2s; display: flex; align-items: center; gap: 8px; font-size: 0.9rem;
+    }
+    
+    .btn-primary { background: var(--primary-gradient); color: #fff; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4); }
+    
+    .btn-outline { background: transparent; border: 1px solid var(--glass-border); color: var(--text-muted); }
+    .btn-outline:hover { border-color: #fff; color: #fff; }
+
+    .btn-nav {
+        margin-top: 24px; width: 100%; justify-content: center;
+        background: rgba(255,255,255,0.05); color: var(--text-muted);
+    }
+    .btn-nav:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+    /* Progress Bar */
+    .progress-wrapper { width: 100%; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--glass-border); }
+    .progress-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--success); width: 0%; transition: width 1s ease; }
+    .progress-text { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; display: flex; justify-content: space-between;}
+
+    /* Messages */
+    .msg-box { padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 0.9rem; display: none; }
+    .msg-success { background: rgba(74, 222, 128, 0.2); color: #4ade80; border: 1px solid #4ade80; }
+    .msg-error { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .profile-container { grid-template-columns: 1fr; }
+      .info-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-light"></div>
+
+  <div class="profile-container">
+    
+    <div class="identity-card">
+      <div class="avatar-wrapper">
+        <img src="" alt="Profile" class="avatar-img" id="avatarImg">
+        
+        <div class="avatar-actions">
+          <button class="icon-btn-small btn-edit-photo" id="uploadTrigger" title="Change Photo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+          </button>
+          <button class="icon-btn-small btn-remove-photo" id="removeAvatarBtn" title="Remove Photo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        
+        <input type="file" id="avatarUpload" hidden accept="image/*">
+      </div>
+      
+      <h2 class="user-name" id="profileName">Loading...</h2>
+      <p class="user-role">WarrantyVault User</p>
+      
+      <div class="status-pill" id="profileStatusBadge">
+        Checking...
+      </div>
+
+      <div class="progress-wrapper">
+        <span class="progress-text"><span>Profile Strength</span><span id="progressPercent">0%</span></span>
+        <div class="progress-bar-bg"><div class="progress-fill" id="profileProgress"></div></div>
+      </div>
+
+      <button class="action-btn btn-nav" onclick="window.location.href='dashboard.html'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Back to Dashboard
+      </button>
+    </div>
+
+    <div class="details-card">
+      <div class="section-header">
+        <span class="section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--glow-color)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          Account Details
+        </span>
+        <button class="action-btn btn-primary" id="editBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          Edit Profile
+        </button>
+      </div>
+
+      <div class="msg-box msg-success" id="successMsg">Profile updated successfully!</div>
+      <div class="msg-box msg-error" id="errorMsg"></div>
+
+      <div class="info-grid" id="profileView">
+        <div class="info-group">
+          <span class="label">Full Name</span>
+          <div class="value" id="name">-</div>
+        </div>
+        <div class="info-group">
+          <span class="label">Email Address</span>
+          <div class="value" id="email">-</div>
+        </div>
+        <div class="info-group">
+          <span class="label">Phone Number</span>
+          <div class="value" id="mobileNumber">-</div>
+        </div>
+        <div class="info-group">
+          <span class="label">Address</span>
+          <div class="value" id="address">-</div>
+        </div>
+      </div>
+
+      <form class="edit-form" id="editForm">
+        <div class="info-group">
+          <span class="label">Full Name</span>
+          <input type="text" id="editName" name="name" placeholder="Enter your full name">
+        </div>
+        <div class="info-group">
+          <span class="label">Phone Number</span>
+          <input type="tel" id="editMobile" name="mobileNumber" placeholder="Enter mobile number">
+        </div>
+        <div class="info-group">
+          <span class="label">Address</span>
+          <textarea id="editAddress" name="address" rows="3" placeholder="Enter your address"></textarea>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:12px;">
+          <button type="button" class="action-btn btn-outline" id="cancelEdit">Cancel</button>
+          <button type="submit" class="action-btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <script>
+    // --- AUTH ---
+    const userEmail = localStorage.getItem('userEmail');
+    if (!userEmail) window.location.href = '/login.html';
+
+    // --- ELEMENTS ---
+    const avatarImg = document.getElementById('avatarImg');
+    const uploadTrigger = document.getElementById('uploadTrigger');
+    const removeAvatarBtn = document.getElementById('removeAvatarBtn');
+    const avatarUpload = document.getElementById('avatarUpload');
+    
+    // --- AVATAR LOGIC ---
+    
+    // 1. Upload
+    uploadTrigger.onclick = () => avatarUpload.click();
+    
+    avatarUpload.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          avatarImg.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // 2. Remove (Reset to initials)
+    removeAvatarBtn.onclick = function() {
+      const name = document.getElementById('name').textContent || 'User';
+      // Generate initials avatar
+      avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=667eea&color=fff&size=128`;
+      // Reset input
+      avatarUpload.value = '';
+    };
+
+    // --- DATA LOGIC ---
+    function updateProgress(data) {
+      let completed = 0;
+      if (data.name) completed++;
+      if (data.email) completed++;
+      if (data.mobileNumber) completed++;
+      if (data.address) completed++;
+      const percent = Math.round((completed/4)*100);
+      document.getElementById('profileProgress').style.width = percent + '%';
+      document.getElementById('progressPercent').textContent = percent + '%';
+    }
+
+    async function loadProfile() {
+      try {
+        const res = await fetch(`/api/auth/profile?email=${encodeURIComponent(userEmail)}`);
+        const data = await res.json();
+        
+        // Display Text
+        document.getElementById('name').textContent = data.name || 'Not Set';
+        document.getElementById('profileName').textContent = data.name || 'User';
+        document.getElementById('email').textContent = data.email || '-';
+        document.getElementById('mobileNumber').textContent = data.mobileNumber || 'Not Set';
+        document.getElementById('address').textContent = data.address || 'Not Set';
+        
+        // Fill Edit Form (Includes Name)
+        document.getElementById('editName').value = data.name || '';
+        document.getElementById('editMobile').value = data.mobileNumber || '';
+        document.getElementById('editAddress').value = data.address || '';
+        
+        updateProgress(data);
+
+        // Set Avatar (Only if not manually changed recently in this session)
+        if (data.name && (!avatarImg.src || avatarImg.src === window.location.href)) {
+           avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name)}&background=667eea&color=fff&size=128`;
+        }
+
+        // Badge Status
+        const badge = document.getElementById('profileStatusBadge');
+        if (data.profileCompleted) {
+          badge.innerHTML = '✨ Profile Completed';
+          badge.style.color = '#4ade80';
+          badge.style.background = 'rgba(74, 222, 128, 0.15)';
+          badge.style.borderColor = 'rgba(74, 222, 128, 0.3)';
+        } else {
+          badge.innerHTML = '⚠️ Incomplete';
+          badge.style.color = '#facc15';
+          badge.style.background = 'rgba(250, 204, 21, 0.15)';
+          badge.style.borderColor = 'rgba(250, 204, 21, 0.3)';
+        }
+
+      } catch (err) {
+        console.error("Profile Error", err);
+      }
+    }
+    
+    // Init
+    loadProfile();
+
+    // --- EDIT MODE LOGIC ---
+    const editBtn = document.getElementById('editBtn');
+    const cancelEdit = document.getElementById('cancelEdit');
+    const viewSection = document.getElementById('profileView');
+    const editSection = document.getElementById('editForm');
+    const successMsg = document.getElementById('successMsg');
+    const errorMsg = document.getElementById('errorMsg');
+
+    editBtn.onclick = () => {
+      viewSection.style.display = 'none';
+      editSection.style.display = 'flex';
+      editBtn.style.display = 'none';
+      successMsg.style.display = 'none';
+    };
+
+    cancelEdit.onclick = () => {
+      editSection.style.display = 'none';
+      viewSection.style.display = 'grid';
+      editBtn.style.display = 'flex';
+    };
+
+    // --- SAVE LOGIC ---
+    document.getElementById('editForm').onsubmit = async (e) => {
+      e.preventDefault();
+      successMsg.style.display = 'none';
+      errorMsg.style.display = 'none';
+      
+      const name = document.getElementById('editName').value.trim();
+      const mobileNumber = document.getElementById('editMobile').value.trim();
+      const address = document.getElementById('editAddress').value.trim();
+
+      try {
+        const res = await fetch('/api/auth/update-profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: userEmail, name, mobileNumber, address })
+        });
+        
+        const result = await res.json();
+        
+        if (res.ok) {
+          successMsg.style.display = 'block';
+          editSection.style.display = 'none';
+          viewSection.style.display = 'grid';
+          editBtn.style.display = 'flex';
+          loadProfile(); // Refresh view
+        } else {
+          errorMsg.textContent = result.error || 'Update failed.';
+          errorMsg.style.display = 'block';
+        }
+      } catch (err) {
+        errorMsg.textContent = 'Network error.';
+        errorMsg.style.display = 'block';
+      }
+    };
+  </script>
+</body>
+</html>

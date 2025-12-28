@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WarrantyVault Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --card-hover-bg: rgba(255, 255, 255, 0.1);
+      --text-white: #ffffff;
+      --text-muted: #a0aec0;
+      --glow-color: #a78bfa;
+      --nav-glass: rgba(15, 23, 42, 0.8);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text-white);
+      background-color: #0f172a;
+      background-image: 
+        radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+      overflow-x: hidden;
+      padding-top: 80px;
+    }
+
+    /* Ambient Background Light */
+    .ambient-light {
+      position: fixed;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, rgba(0,0,0,0) 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* --- Navigation --- */
+    .main-nav {
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      padding: 15px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+      background: transparent;
+      backdrop-filter: blur(0px);
+    }
+
+    .main-nav.scrolled {
+      background: var(--nav-glass);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--glass-border);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      padding: 12px 40px;
+    }
+
+    .nav-logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #fff, #c4b5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
+    }
+
+    /* Buttons */
+    .dashboard-btn {
+      padding: 10px 24px;
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .dashboard-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 10px 24px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: #fff;
+    }
+
+    /* --- YOUR SLIDER CSS (Integrated Here) --- */
+    .slider-container {
+      position: relative;
+      width: 90%;
+      max-width: 1200px;
+      height: 450px;
+      margin: 40px auto 60px auto;
+      border-radius: 24px;
+      overflow: hidden;
+      /* The "Glass" Border & Glow */
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 40px rgba(124, 58, 237, 0.15); 
+      background: #000; /* Fallback */
+    }
+
+    .slider {
+      display: flex;
+      height: 100%;
+      transition: transform 0.7s cubic-bezier(0.25, 0.1, 0.25, 1); /* Ultra smooth ease */
+    }
+
+    .slider img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      flex-shrink: 0;
+      filter: brightness(0.9); /* Dims slightly for better text contrast */
+    }
+
+    /* Glass Buttons (Arrows) */
+    .slider-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(4px); /* Frosted effect */
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      z-index: 10;
+      user-select: none;
+    }
+
+    .slider-arrow:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: #fff;
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); /* Glow on hover */
+    }
+
+    .left-arrow { left: 20px; }
+    .right-arrow { right: 20px; }
+
+    /* Glowing Dots */
+    .slider-dots {
+      position: absolute;
+      bottom: 24px;
+      left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .slider-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 1px solid transparent;
+    }
+
+    .slider-dot.active {
+      background: #fff;
+      transform: scale(1.3);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); /* White Glow */
+    }
+
+    /* --- Sections General --- */
+    .section {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto 80px auto;
+    }
+
+    h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 30px;
+      position: relative;
+      display: inline-block;
+      color: #fff;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -8px; left: 0;
+      width: 60px; height: 4px;
+      background: var(--primary-gradient);
+      border-radius: 2px;
+    }
+
+    /* --- Features Grid --- */
+    .features-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      list-style: none;
+      padding: 0;
+    }
+
+    .features-list li {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      padding: 30px 24px;
+      border-radius: 16px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+
+    .features-list li:hover {
+      background: var(--card-hover-bg);
+      transform: translateY(-5px);
+      border-color: rgba(167, 139, 250, 0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    /* --- Blog Section --- */
+    .blog-post {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      padding: 32px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+      transition: transform 0.3s;
+    }
+
+    .blog-post:hover {
+      background: var(--card-hover-bg);
+    }
+
+    .blog-post h3 {
+      font-size: 1.4rem;
+      margin-top: 0;
+      margin-bottom: 16px;
+      color: #fff;
+    }
+
+    .blog-post p, .blog-post li {
+      color: var(--text-muted);
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+
+    .blog-post ul {
+      padding-left: 20px;
+    }
+
+    .blog-post li {
+      margin-bottom: 8px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .slider-container { height: 250px; }
+      .nav-links { display: none; } 
+      h2 { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-light"></div>
+
+  <nav class="main-nav">
+    <div class="nav-logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+      </svg>
+      WarrantyVault
+    </div>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#blog">Blog</a></li>
+      <li><button class="dashboard-btn" onclick="window.location.href='howtouse.html'">How to Use</button></li>
+      <li><button class="dashboard-btn" onclick="window.location.href='dashboard.html'">Go to Dashboard</button></li>
+      <li>
+        <button id="logoutBtn" class="logout-btn">Logout</button>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="slider-container">
+    <div class="slider" id="slider">
+      <img src="Images/warrnty symbol.png" alt="Warranty Image 1" />
+      <img src="Images/img2.jpeg" alt="Warranty Image 2" />
+      <img src="Images/img3.png" alt="Warranty Image 3" />
+      <img src="Images/img4.png" alt="Warranty Image 4" />
+    </div>
+    <div class="slider-arrow left-arrow">❮</div>
+    <div class="slider-arrow right-arrow">❯</div>
+    <div class="slider-dots" id="sliderDots"></div>
+  </div>
+
+  <section id="features" class="section">
+    <h2>Powerful Features</h2>
+    <ul class="features-list">
+      <li><span>📊</span> Dashboard to track active, expiring, and expired warranties instantly.</li>
+      <li><span>👤</span> Manage your complete profile and keep contact details updated.</li>
+      <li><span>📝</span> Add products easily with invoice and warranty card uploads.</li>
+      <li><span>🔔</span> Get timely notifications for expiring warranties and new products.</li>
+      <li><span>🔒</span> Enterprise-grade security with end-to-end data encryption.</li>
+      <li><span>📱</span> Fully responsive design optimized for mobile and desktop.</li>
+      <li><span>🕒</span> Quick one-tap access to external warranty claim portals.</li>
+      <li><span>📂</span> Download your stored invoices and warranty cards anytime, anywhere.</li>
+    </ul>
+  </section>
+
+  <section id="blog" class="section">
+    <h2>Latest Insights</h2>
+    <article class="blog-post">
+      <h3>Why Digital Warranty Tracking is Essential</h3>
+      <p>
+        Keeping track of product warranties physically leads to lost papers and faded receipts. With WarrantyVault, you never lose a warranty again. Our dashboard provides a centralized view of your covered products, alerting you before coverage ends so you can claim repairs in time.
+      </p>
+    </article>
+    <article class="blog-post">
+      <h3>Maximizing Your WarrantyVault Experience</h3>
+      <ul>
+        <li>Always upload a clear photo of your invoice immediately after purchase.</li>
+        <li>Set custom reminders for high-value item warranty expiries.</li>
+        <li>Utilize the secure cloud storage to declutter your physical filing cabinets.</li>
+        <li>Keep your profile up to date to ensure seamless support communication.</li>
+      </ul>
+    </article>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Smooth Scroll Logic
+      document.querySelectorAll('.nav-links a[href^="#"]').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+          const targetId = this.getAttribute('href').slice(1);
+          const target = document.getElementById(targetId);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+
+      // Navbar transparency Logic
+      const nav = document.querySelector('.main-nav');
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 40) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      });
+
+      // Slider Logic
+      const slider = document.getElementById('slider');
+      const images = slider.querySelectorAll('img');
+      const dotsContainer = document.getElementById('sliderDots');
+      let currentIndex = 0;
+
+      // Create dots dynamically
+      dotsContainer.innerHTML = '';
+      for (let i = 0; i < images.length; i++) {
+        const dot = document.createElement('span');
+        dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
+        dot.dataset.index = i;
+        dot.onclick = function() {
+          goToSlide(i);
+        };
+        dotsContainer.appendChild(dot);
+      }
+
+      function goToSlide(idx) {
+        currentIndex = idx;
+        slider.style.transform = `translateX(-${idx * 100}%)`;
+        dotsContainer.querySelectorAll('.slider-dot').forEach((dot, i) => {
+          dot.classList.toggle('active', i === idx);
+        });
+      }
+
+      function nextSlide() {
+        currentIndex = (currentIndex + 1) % images.length;
+        goToSlide(currentIndex);
+      }
+
+      function prevSlide() {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        goToSlide(currentIndex);
+      }
+
+      document.querySelector('.left-arrow').onclick = prevSlide;
+      document.querySelector('.right-arrow').onclick = nextSlide;
+
+      let autoSlide = setInterval(nextSlide, 4000);
+
+      slider.onmouseenter = () => clearInterval(autoSlide);
+      slider.onmouseleave = () => autoSlide = setInterval(nextSlide, 4000);
+
+      // Initialize first slide
+      goToSlide(0);
+    });
+
+    // Logout Logic
+    document.getElementById('logoutBtn').onclick = function() {
+      localStorage.removeItem('isLoggedIn');
+      window.location.href = '/login.html';
+    };
+  </script>
+</body>
+</html>

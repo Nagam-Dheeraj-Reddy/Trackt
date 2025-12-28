@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register - WarrantyVault</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --glass-bg: rgba(255, 255, 255, 0.07);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --input-bg: rgba(0, 0, 0, 0.2);
+      --text-white: #ffffff;
+      --text-muted: #a0aec0;
+      --glow-color: #a78bfa;
+      --error-color: #ff6b6b;
+      --success-green: #4ade80;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      color: var(--text-white);
+      background-color: #0f172a;
+      background-image: 
+        radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+      padding: 20px 0;
+    }
+
+    /* Ambient Background Light */
+    .ambient-light {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.25) 0%, rgba(0,0,0,0) 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+      animation: pulse 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+      100% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+    }
+
+    .container {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      padding: 10px;
+    }
+
+    /* Glass Card Style */
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 40px 36px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      animation: floatUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes floatUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Branding Section */
+    .branding {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .icon-wrapper {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px auto;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+    }
+
+    .brand-title {
+      font-size: 26px;
+      font-weight: 700;
+      margin: 0;
+      background: linear-gradient(to right, #fff, #c4b5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-tagline {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 6px;
+      font-weight: 400;
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      margin-left: 4px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    /* Input Styles matching Login */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 14px 14px 14px 48px; /* Padding left for Icon */
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--glow-color);
+      background: rgba(0,0,0,0.4);
+      box-shadow: 0 0 15px rgba(167, 139, 250, 0.2);
+    }
+
+    input.invalid {
+      border-color: var(--error-color);
+      box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+    }
+
+    .field-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,0.4);
+      pointer-events: none;
+      transition: color 0.3s;
+    }
+
+    input:focus ~ .field-icon {
+      color: var(--glow-color);
+    }
+
+    .inline-error {
+      color: var(--error-color);
+      font-size: 0.85em;
+      margin-top: 6px;
+      margin-left: 4px;
+      font-weight: 500;
+      display: none; 
+    }
+
+    /* CTA Button */
+    .cta-btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      background: var(--primary-gradient);
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-top: 10px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(118, 75, 162, 0.4);
+    }
+
+    .cta-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: 0.5s;
+    }
+    .cta-btn:hover::after {
+      left: 100%;
+    }
+
+    /* Secondary Links */
+    .secondary-actions {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .login-link {
+      color: #fff;
+      font-weight: 600;
+      text-decoration: none;
+      margin-left: 4px;
+      transition: color 0.2s;
+    }
+
+    .login-link:hover {
+      color: var(--glow-color);
+      text-decoration: underline;
+    }
+
+    /* Global Error Message */
+    .error-msg {
+      color: #ffcccc;
+      background: rgba(220, 38, 38, 0.25);
+      border: 1px solid rgba(220, 38, 38, 0.5);
+      font-size: 0.9em;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 16px;
+      text-align: center;
+      display: none;
+      animation: fadeIn 0.3s;
+    }
+
+    .security-info {
+      text-align: center;
+      font-size: 0.85em;
+      color: rgba(255, 255, 255, 0.3);
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* --- SUCCESS MODAL STYLES --- */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none; /* Hidden by default */
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .success-modal {
+      background: rgba(20, 20, 30, 0.95);
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      box-shadow: 0 0 40px rgba(74, 222, 128, 0.2);
+      padding: 40px;
+      border-radius: 24px;
+      text-align: center;
+      max-width: 350px;
+      width: 90%;
+      transform: scale(0.8);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .modal-overlay.active .success-modal {
+      transform: scale(1);
+    }
+
+    .success-icon-box {
+      width: 80px;
+      height: 80px;
+      background: rgba(74, 222, 128, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px auto;
+      color: var(--success-green);
+      border: 1px solid rgba(74, 222, 128, 0.2);
+    }
+
+    .modal-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #fff;
+      margin: 0 0 10px 0;
+    }
+
+    .modal-desc {
+      font-size: 14px;
+      color: #a0aec0;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .modal-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--success-green);
+      color: #064e3b;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .modal-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(74, 222, 128, 0.4);
+    }
+
+    @media (max-width: 500px) {
+      .glass-card { padding: 32px 24px; }
+      .container { padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="ambient-light"></div>
+
+  <div class="container">
+    <div class="glass-card">
+      
+      <div class="branding">
+        <div class="icon-wrapper">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <path d="M12 8v4"></path>
+            <path d="M12 16h.01"></path>
+          </svg>
+        </div>
+        <div class="brand-title">WarrantyVault</div>
+        <div class="brand-tagline">Create your secure account</div>
+      </div>
+
+      <form id="registerForm" autocomplete="off">
+        <div class="form-group">
+          <label for="name">Full Name *</label>
+          <div class="input-wrapper">
+            <input type="text" name="name" id="name" required placeholder="John Doe" />
+            <svg class="field-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <div class="inline-error" id="nameError"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <div class="input-wrapper">
+            <input type="email" name="email" id="email" required placeholder="name@example.com" />
+            <svg class="field-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+          </div>
+          <div class="inline-error" id="emailError"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password *</label>
+          <div class="input-wrapper">
+            <input type="password" name="password" id="password" required minlength="8" placeholder="8+ chars, numbers & symbols" />
+            <svg class="field-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <div class="inline-error" id="passwordError"></div>
+        </div>
+
+        <button type="submit" class="cta-btn">
+          Create Account
+        </button>
+        
+        <div class="error-msg" id="errorMsg"></div>
+      </form>
+
+      <div class="secondary-actions">
+        Already have an account?
+        <a href="/login.html" class="login-link">Login</a>
+      </div>
+
+      <div class="security-info">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        End-to-end encrypted privacy.
+      </div>
+
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="successModal">
+    <div class="success-modal">
+      <div class="success-icon-box">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          <path d="M9 12l2 2 4-4"></path>
+        </svg>
+      </div>
+      <h3 class="modal-title">Account Secured</h3>
+      <p class="modal-desc">
+        Your WarrantyVault has been created successfully. You can now log in to store your documents.
+      </p>
+      <button class="modal-btn" onclick="redirectToLogin()">Go to Login</button>
+    </div>
+  </div>
+
+  <script>
+    // --- Inline Validation Logic ---
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const nameInput = document.getElementById('name');
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+    const nameError = document.getElementById('nameError');
+
+    emailInput.oninput = function() {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(emailInput.value.trim())) {
+        emailInput.classList.add('invalid');
+        emailError.textContent = 'Please enter a valid email address.';
+        emailError.style.display = 'block';
+      } else {
+        emailInput.classList.remove('invalid');
+        emailError.textContent = '';
+        emailError.style.display = 'none';
+      }
+    };
+
+    passwordInput.oninput = function() {
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+      if (!passwordRegex.test(passwordInput.value)) {
+        passwordInput.classList.add('invalid');
+        passwordError.textContent = 'Password must be at least 8 characters and include letters, numbers, and a special character.';
+        passwordError.style.display = 'block';
+      } else {
+        passwordInput.classList.remove('invalid');
+        passwordError.textContent = '';
+        passwordError.style.display = 'none';
+      }
+    };
+
+    nameInput.oninput = function() {
+      if (nameInput.value.trim().length < 2) {
+        nameInput.classList.add('invalid');
+        nameError.textContent = 'Please enter your full name.';
+        nameError.style.display = 'block';
+      } else {
+        nameInput.classList.remove('invalid');
+        nameError.textContent = '';
+        nameError.style.display = 'none';
+      }
+    };
+
+    // --- Form Submission Logic ---
+    document.getElementById('registerForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const errorMsg = document.getElementById('errorMsg');
+      errorMsg.style.display = 'none';
+      
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      const name = nameInput.value.trim();
+
+      // Final Validation Check
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+
+      let valid = true;
+      if (!emailRegex.test(email)) {
+        emailInput.classList.add('invalid');
+        emailError.textContent = 'Please enter a valid email address.';
+        emailError.style.display = 'block';
+        valid = false;
+      }
+      if (!passwordRegex.test(password)) {
+        passwordInput.classList.add('invalid');
+        passwordError.textContent = 'Weak password.';
+        passwordError.style.display = 'block';
+        valid = false;
+      }
+      if (name.length < 2) {
+        nameInput.classList.add('invalid');
+        nameError.textContent = 'Please enter your full name.';
+        nameError.style.display = 'block';
+        valid = false;
+      }
+      if (!valid) return;
+
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+
+        if (res.ok) {
+          // Success! Trigger the Custom Modal
+          const modal = document.getElementById('successModal');
+          modal.classList.add('active');
+        } else {
+          errorMsg.textContent = result.error || 'Failed to register';
+          errorMsg.style.display = 'block';
+        }
+      } catch (err) {
+        errorMsg.textContent = 'Network error: ' + err.message;
+        errorMsg.style.display = 'block';
+      }
+    };
+
+    // Redirect Function for the Modal Button
+    function redirectToLogin() {
+      window.location.href = '/login.html';
+    }
+  </script>
+</body>
+</html>
